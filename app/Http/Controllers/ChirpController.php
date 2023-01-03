@@ -60,11 +60,14 @@ class ChirpController extends Controller
      * Show the form for editing the specified resource.
      *
      * @param  \App\Models\Chirp  $chirp
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Contracts\View\Factory|\Illuminate\Contracts\View\View|\Illuminate\Http\Response
      */
     public function edit(Chirp $chirp)
     {
-        //
+        //監測資料授權，若經授權則正常執行
+        $this->authorize('update',$chirp);
+
+        return view('chirps.edit',['chirp'=>$chirp]);
     }
 
     /**
@@ -72,11 +75,20 @@ class ChirpController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \App\Models\Chirp  $chirp
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Contracts\Foundation\Application|\Illuminate\Http\RedirectResponse|\Illuminate\Http\Response|\Illuminate\Routing\Redirector
      */
     public function update(Request $request, Chirp $chirp)
     {
-        //
+        //監測資料授權，若經授權則正常執行
+        $this->authorize('update', $chirp);
+        //資料驗證
+        $validated = $request->validate([
+            'message' => 'required|string|max:255',
+        ]);
+        //更新資料
+        $chirp->update($validated);
+
+        return redirect(route('chirps.index'));
     }
 
     /**
