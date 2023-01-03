@@ -53,6 +53,7 @@ class ChirpPolicy
      */
     public function update(User $user, Chirp $chirp)
     {
+        //當前登入的使用者與撰寫chirp的人相同者，被授權更新chirp
         return $chirp->user()->is($user);
     }
 
@@ -65,7 +66,8 @@ class ChirpPolicy
      */
     public function delete(User $user, Chirp $chirp)
     {
-        //
+        //被授權更新chirp的人也將被授權刪除
+        return $this->update($user, $chirp);
     }
 
     /**
